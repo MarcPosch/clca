@@ -94,7 +94,7 @@ get_passphrase_cached() {
 	done
 
 	export CLCA_SESSION_KEY
-	ENCRYPTED_PASSPHRASE=`echo "$CLEARTEXT_PASSPHRASE" | $OPENSSL enc -aes256 -a -e -pass env:CLCA_SESSION_KEY`
+	ENCRYPTED_PASSPHRASE=`echo "$CLEARTEXT_PASSPHRASE" | $OPENSSL enc -aes256 -pbkdf2 -a -e -pass env:CLCA_SESSION_KEY`
 	if [ "$?" != 0 ] ; then
 	    echo "ERROR: could not encrypt passphrase"
 	    abort 1
@@ -106,7 +106,7 @@ get_passphrase_cached() {
     else
 	# passphrase has been set, decrypt and return
 	export CLCA_SESSION_KEY
-	PASSPHRASE=`echo "$ENCRYPTED_PASSPHRASE" | $OPENSSL enc -aes256 -a -d -pass env:CLCA_SESSION_KEY`
+	PASSPHRASE=`echo "$ENCRYPTED_PASSPHRASE" | $OPENSSL enc -aes256 -pbkdf2 -a -d -pass env:CLCA_SESSION_KEY`
 	if [ "$?" != 0 ] ; then
 	    echo "ERROR: could not decrypt passphrase"
 	    abort 1
